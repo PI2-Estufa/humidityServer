@@ -1,15 +1,22 @@
 from nameko.rpc import rpc
 from nameko.messaging import Publisher
-from kombu import Echange, Queue
+from kombu import Exchange, Queue
+import db
+from db import Humidity
 
-exchange = Exchagen("main", "direct", durable=True)
+exchange = Exchange("main", "direct", durable=True)
 queue = Queue("humidity_queue", exchange=exchange)
 
-class Humidity():
+
+class HumidityServer():
     name = "humidity_server"
     publish = Publisher(exchange=exchange, queue=queue)
 
     @rpc
     def receive_humidity(self, humidity):
         h = Humidity()
+        h.value = humidity
+        db.session.add(h)
+        db.session.commit()
+        self.publish(humidity)
         return humidity
