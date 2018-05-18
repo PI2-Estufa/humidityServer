@@ -1,0 +1,19 @@
+version: "3.5"
+services: 
+    rabbit:
+      image: rabbitmq:latest
+      networks:
+        - greenhouse
+    humidity_server:
+      build: .
+      networks:
+        - greenhouse
+      volumes:
+        - .:/code
+      depends_on:
+        - rabbit
+
+networks:
+  greenhouse:
+    external: true
+    name: greenhouse
