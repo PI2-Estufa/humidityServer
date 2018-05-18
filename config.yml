@@ -1,1 +1,1 @@
-AQMP_URI: "amqp://rabbit"
+AMQP_URI: "amqp://rabbit"
