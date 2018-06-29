@@ -1,6 +1,7 @@
 from nameko.rpc import rpc
 import db
 from db import Humidity
+from psycopg2 import OperationalError
 
 
 class HumidityServer():
@@ -11,6 +12,9 @@ class HumidityServer():
         humidity = int(humidity)
         h = Humidity()
         h.value = humidity
-        db.session.add(h)
-        db.session.commit()
+        try:
+            db.session.add(h)
+            db.session.commit()
+        except OperationalError:
+            db.session.rollback()
         return humidity
